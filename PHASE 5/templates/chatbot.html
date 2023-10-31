@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Web App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        /* Style for the chat container */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+
+            text-align: center;
+        }
+
+        .frame {
+            margin-left: auto;
+            margin-right: auto;
+            width: 95%;
+            height: 600px;
+            border: 5px solid black;
+            background-color: white;
+            overflow-y: scroll;
+        }
+
+        #chat-box {
+            font-family: monospace;
+            font-size: 40px;
+            text-align: right;
+            line-height: 60px;
+        }
+
+        #chat-box span {
+            background-color: rgb(98, 255, 0);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #bot-box {
+            font-family: monospace;
+            font-size: 40px;
+            text-align: left;
+            line-height: 60px;
+        }
+
+        #bot-box span {
+            background-color: gray;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* Style for user input */
+        #user-input {
+            width: 96%;
+            padding: 20px;
+            margin-left: 20px;
+            margin-top: 30px;
+            border: 10px solid #ccc;
+            border-radius: 10px;
+        }
+
+        #send {
+            display: block;
+            margin: 10px auto;
+            padding: 20px 40px;
+            background-color: #007bff;
+            font: arial, bolder;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #send:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for chat messages */
+        p {
+            padding: 5px;
+            margin: 5px 0;
+        }
+
+        /* Style for user messages */
+        p:nth-child(odd) {
+            text-align: right;
+            border-radius: 5px;
+        }
+
+        /* Style for chatbot messages */
+        p:nth-child(even) {
+            color: black;
+            text-align: right;
+            border-radius: 5px;
+        }
+
+        .submit {
+            margin-left: auto;
+            margin-right: auto;
+            width: 95%;
+            tab-size: 30%;
+            color: green;
+            padding: 0%;
+            background-color: white;
+        }
+
+        /* Media query for responsiveness */
+        @media screen and (max-width: 400px) {
+            #chat-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <meta charset="UTF-8">
+    <h1 style="font-size: 50px;">&#129302; Chatbot</h1>
+    <div class='frame'>
+        <div id="chat-box"></div>
+    </div>
+    <div class='submit'>
+        <input type="text" id="user-input" placeholder="Type a message...">
+        <!-- <button id="send">Send</button> -->
+        <button type="button" id="send" class="btn btn-primary">Send</button>
+    </div>
+</body>
+
+<script>
+    document.getElementById("send").onclick = function ans() {
+        var user_input = document.getElementById("user-input").value;
+        var chat_box = document.getElementById("chat-box");
+
+        var user_message = document.createElement("p");
+        user_message.innerHTML = '<p id="chat-box"><span>' + "<strong>You:</strong> " + user_input + "</span></p>";
+        // user_message.innerHTML = "<strong>You:</strong> " + user_input;
+        chat_box.appendChild(user_message).scrollIntoView({ block: "start", behavior: "smooth" });
+
+        document.getElementById("user-input").value = '';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/ask", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var bot_message = document.createElement("p");
+                bot_message.innerHTML = '<p id="bot-box"><span>' + "<strong>ChatBot:</strong> " + xhr.responseText + "</span></p>";
+                chat_box.appendChild(bot_message).scrollIntoView({ block: "start", behavior: "smooth" });
+            }
+        };
+        xhr.send("user_input=" + user_input);
+    };
+    $("#user-input").keypress(function (e) {
+        if (e.which == 13) {
+            aa();
+        }
+    });
+</script>
+
+
+</html>
